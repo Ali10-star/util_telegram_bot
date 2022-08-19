@@ -23,6 +23,9 @@ pexels_handler = CommandHandler('pexels', wp.pexels_handler)
 unsplash_handler = CommandHandler('unsplash', wp.unsplash_handler)
 
 store_handler = CommandHandler('mystore', data_store.show_user_data)
+put_handler = CommandHandler('put', data_store.store_value)
+get_handler = CommandHandler('get', data_store.show_value)
+del_handler = CommandHandler('del', data_store.delete_value)
 
 start_handler = ConversationHandler(
         entry_points=[CommandHandler("start", hnd.start)],

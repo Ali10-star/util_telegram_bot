@@ -18,9 +18,13 @@ Example: /remind 30m important text! - will send 'important text!' after 30 minu
 /unsplash <search> - search for a photo on Unsplash
 
 /lang - change the language of the bot (English or Arabic)
-
+-------------------------------------------------
+Store commands:
 /mystore - show info you saved in the your store
-
+/put <key> <value> - save <value> with key <key>
+/get <key> - show the value saved with key <key>
+/del <key> - delete the value saved with key <key>
+-------------------------------------------------
 This is it for now!
 """
 
@@ -47,8 +51,12 @@ HELP_MESSAGE_ARABIC = """
 أو أدخل نصاً بعد الأمر للبحث عنه في الموقع
 
 /lang - تغيير لغة البوت (الإنجليزية أو العربية)
-
+-------------------------------------------------
+أوامر تخزين البيانات الخاصة بك:
 /mystore - عرض معلوماتك المحفوظة في مخزنك
-
+/put - خزن قيمة معينة في المخزن (قم بوضع اسم وبعده قيمة)
+/get - عرض القيمة المحفوظة في المخزن (قم بوضع اسم)
+/del - حذف قيمة (قم بوضع اسم القيمة التي تريد حذفها)
+-------------------------------------------------
 هذا كل شيء حتى الآن!
 """

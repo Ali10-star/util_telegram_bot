@@ -1,26 +1,35 @@
 import os
-from urllib import response
+from datetime import datetime
 import requests as http_client
 from telegram import Update
 from telegram.ext import ContextTypes
 from dotenv import load_dotenv
+from helpers.weather_help import get_weather_report
 
 load_dotenv()
 API_KEY = os.getenv('OPEN_WEATHER_API_KEY')
 URL = 'http://api.openweathermap.org/data/2.5/weather'
-# https://api.openweathermap.org/data/2.5/weather?q={QUERY}&appid=34fb43e4e1d267ad9b6c166f3ddc10b4
 
-async def weather_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def weather_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_id = update.message.chat_id
     bot = context.bot
-    query = context.args[0] if context.args else "London"
-    response = http_client.get(URL, params={'q': query, 'appid': API_KEY})
-    await bot.send_message(chat_id=chat_id, text=
-        f"{dict_to_str(response.json())}"
-    )
+    is_arabic = context.user_data.get('language', 'English') == 'Arabic'
+    query = " ".join(context.args[0:] ) if context.args else context.user_data.get('location', "London")
+    MSG = get_message(is_arabic, query)
+    params = {'q': query, 'appid': API_KEY, 'units': 'metric', 'lang': 'ar' if is_arabic else 'en'}
+    response = http_client.get(URL, params=params)
+    if response.status_code == 404:
+        NOT_FOUND = "لم يتم العثور على الموقع" if is_arabic else "Location not found"
+        await bot.send_message(chat_id=chat_id, text=NOT_FOUND, parse_mode='MarkdownV2')
+        return
+    json = response.json()
+    icon_id = json['weather'][0]['icon']
+    icon_url = f"http://openweathermap.org/img/wn/{icon_id}@2x.png"
 
-def celsius(kelvin: float) -> float:
-    return kelvin - 273.15
+    report = get_weather_report(json, is_arabic)
+    await bot.send_message(chat_id=chat_id, text=MSG, parse_mode='MarkdownV2')
+    await bot.send_photo(chat_id=chat_id, photo=icon_url, caption=report)
 
-def dict_to_str(dictionary: dict) -> str:
-    return "\n".join(f"{key}: {value}" for key, value in dictionary.items())
+
+def get_message(is_arabic: bool, query: str) -> str:
+    return f"ها هي النشرة الجوية اليوم في {query}" if is_arabic else f"Here's Today's weather forecast in {query}"

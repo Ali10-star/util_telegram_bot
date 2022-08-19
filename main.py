@@ -26,9 +26,13 @@ if __name__ == '__main__':
         handlers.pexels_handler,
         handlers.unsplash_handler,
         handlers.inline_search_handler,
+        # Data Store
         handlers.store_handler,
+        handlers.put_handler,
+        handlers.get_handler,
+        handlers.del_handler,
         handlers.language_handler,
-        handlers.weather_handler
+        handlers.weather_handler,
     ])
 
     bot_config.run()
